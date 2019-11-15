@@ -22,9 +22,9 @@ def scan_files(directory, prefix=None, postfix=None):
 
 def get_cells(wsi, label, path):
 	""" read all positive cells and save into image files
-	:params wsi: kfb file name
-	:params label: label file name
-	:params path: image save path
+	:param wsi: kfb file name
+	:param label: label file name
+	:param path: image save path
 	"""
 	with open(label, 'r') as f:
 		js = json.load(f)
@@ -36,8 +36,9 @@ def get_cells(wsi, label, path):
 	kr.reader.ReadInfo(reader, wsi, scale, True)
 
 	for dic in js:
+		# ignore rois, use position of cells directly
 		if dic['class'] == 'roi':
-			pass
+			continue
 		img_name = '{}_{}_{}_{}_{}.jpg'.format(basename, dic['x'], dic['y'], dic['w'], dic['h'])
 		img_name = os.path.join(path, img_name)
 		img = reader.ReadRoi(dic['x'], dic['y'], dic['w'], dic['h'], scale)

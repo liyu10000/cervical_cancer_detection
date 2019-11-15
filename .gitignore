@@ -6,5 +6,6 @@
 *.csv
 *.sh
 *.zip
+*.DS_Store
 /kfbreader
 /data
