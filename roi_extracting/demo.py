@@ -49,4 +49,5 @@ if __name__ == '__main__':
 	wsi =  "../data/test/" + sample + ".kfb"
 	label =  "../data/test/" + sample + ".json"
 	path = "../data/test/cells"
+	os.makedirs(path, exist_ok=True)
 	get_cells(wsi, label, path)
