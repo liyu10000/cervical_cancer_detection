@@ -251,7 +251,7 @@ def cell_sampling(label_file, wsi_path, save_path, size):
     new_xmls = Xml(filename, save_path, points_xy, labels, size)
     new_xmls.gen_xml()
 
-    print("[INFO]", "processed ", xml_file)
+    print("[INFO]", "processed ", filename)
 
     
 def cut_cells(label_dict, wsi_dict, path_out, size):

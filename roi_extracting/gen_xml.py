@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 
 class Xml:
-    def __init__(self, filename, save_path, points_xy, labels, size, scale):
+    def __init__(self, filename, save_path, points_xy, labels, size):
         """
         filename: basename (without file extension)
         points_xy: {(x, y): [i,]}
@@ -14,8 +14,8 @@ class Xml:
         self.save_path = save_path
         self.points_xy = points_xy
         self.labels = labels
-        self.size = int(size * scale + 0.5)
-        self.scale = scale
+        self.size = size
+        self.scale = 1
 
     def gen_xml(self):
         for xy, label_indexs in self.points_xy.items():

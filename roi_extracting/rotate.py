@@ -107,20 +107,30 @@ def gen_xml(xml_name):
     h.firstChild.replaceWholeText(str(w_val))        
     with open(xml_name_new, 'w') as newfile:
         DOMTree.writexml(newfile)
-    
+
+
+def batch_rotate(xml_names):
+    for xml_name in xml_names:
+        rotate(xml_name)
+        gen_xml(xml_name)
+
 
 def do_rotate(path):
     xml_names = scan_files(path, postfix=".xml")
+    print("[info] rotating images, # files:", len(xml_names))
+
     executor = ProcessPoolExecutor(max_workers=cpu_count()//2)
     tasks = []
-    for xml_name in xml_names:
-        tasks.append(executor.submit(rotate, xml_name))
-        tasks.append(executor.submit(gen_xml, xml_name))
+
+    batch_size = 2000
+    for i in range(0, len(xml_names), batch_size):
+        batch = xml_names[i : i+batch_size]
+        tasks.append(executor.submit(batch_rotate, batch))
 
     job_count = len(tasks)
     for future in as_completed(tasks):
         job_count -= 1
-        print("One Job Done, last Job Count: {}".format(job_count))
+        print("One Job Done, Remaining Job Count: {}".format(job_count))
     
 if __name__ == "__main__":
     path = ""

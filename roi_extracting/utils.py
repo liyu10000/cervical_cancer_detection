@@ -1,6 +1,10 @@
 import os
 
 
+def get_path_postfix(filename):
+    return os.path.splitext(filename)[1]
+
+
 class FileScanner(object):
     """
     获取文件列表工具类
@@ -20,7 +24,7 @@ class FileScanner(object):
         files = []
         if os.path.isfile(files_path):
             if postfix:
-                _, ctype = get_path_postfix(files_path)
+                ctype = get_path_postfix(files_path)
                 if ctype in postfix:
                     files.append(files_path)
             else:
@@ -30,7 +34,7 @@ class FileScanner(object):
             for root, dirs, filenames in os.walk(files_path):
                 for filename in filenames:
                     if postfix:
-                        _, ctype = get_path_postfix(filename)
+                        ctype = get_path_postfix(filename)
                         if ctype in postfix:
                             files.append(os.path.join(root, filename))
                     else:
