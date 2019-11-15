@@ -5,7 +5,7 @@ from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 # 1 class
-classes = {"pos":0}
+classes = {"pos":1}
 
 def scan_files(directory, prefix=None, postfix=None):
     files_list = []
@@ -47,13 +47,13 @@ def _gen_txt(xml_name, txt_path):
     txt_file.close()
 
 
-
 def batch_gen_txt(xml_names, txt_path):
     for xml_name in xml_names:
         _gen_txt(xml_name, txt_path)
         
         
 def gen_txt(path, dirs=("train", "test")):
+    print('[info] generating txt files')
     for d in dirs:     
         txt_path = os.path.join(path, d)
     
@@ -63,7 +63,7 @@ def gen_txt(path, dirs=("train", "test")):
         executor = ProcessPoolExecutor(max_workers=4)
         tasks = []
 
-        batch_size = 10000
+        batch_size = 5000
         for i in range(0, len(files), batch_size):
             batch = files[i : i+batch_size]
             tasks.append(executor.submit(batch_gen_txt, batch, txt_path))
