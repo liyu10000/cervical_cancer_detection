@@ -1,49 +1,52 @@
-import kfbReader as kr
 import os
 import cv2
-import numpy as np
 import json
+import numpy as np
+import kfbReader as kr
 
-scale =  20
-sample =  "T2019_34"
 
-file1 =  "./"+sample+".kfb"
-label1 =  "./"+sample+".json"
-dir = './rois/'
-os.makedirs(dir, exist_ok=True)
-reader = kr.reader()
-kr.reader.ReadInfo(reader,file1,scale,True)
+def scan_files(directory, prefix=None, postfix=None):
+    files_list = []
+    for root, sub_dirs, files in os.walk(directory):
+        for special_file in files:
+            if postfix:
+                if special_file.endswith(postfix):
+                    files_list.append(os.path.join(root, special_file))
+            elif prefix:
+                if special_file.startswith(prefix):
+                    files_list.append(os.path.join(root, special_file))
+            else:
+                files_list.append(os.path.join(root, special_file))
+    return files_list
 
-def  get_roi(label):
-	with  open(label,"r") as f:
+
+def get_cells(wsi, label, path):
+	""" read all positive cells and save into image files
+	:params wsi: kfb file name
+	:params label: label file name
+	:params path: image save path
+	"""
+	with open(label, 'r') as f:
 		js = json.load(f)
-	rois = []
-	roi = {}
-	for dic in js:
-		if dic["class"] ==  "roi":
-			roi = dic
-			roi["poses"] = []
-			rois.append(roi)
-		else :
-			pass
-	for dic in js:
-		if dic["class"] ==  "roi":
-			pass
-		else:
-			for roi1 in rois:
-				if roi1["x"] <= dic["x"] and roi1["y"] <= dic["y"] and dic["x"] + dic["w"] <= roi1["x"] + roi1["w"] and dic["y"] + dic["h"] <= roi1["y"] + roi1["h"]:
-					roi1["poses"].append(dic)
-	return rois
-	
-rois = get_roi(label1)
-print(len(rois))
 
-for i,roi1 in  enumerate(rois):
-	roi = reader.ReadRoi(roi1["x"],roi1["y"],roi1["w"],roi1["h"],scale)
-	for pos in roi1["poses"]:
-		rx = pos["x"]-roi1["x"]
-		ry = pos["y"]-roi1["y"]
-		cv2.rectangle(roi, (rx,ry), (rx+pos["w"],ry+pos["h"]),(0,255,0), 4)
-	save_name =  dir+str(i)+".jpg"
-	cv2.imwrite(save_name,roi)
-	print("save roi img:"+save_name)
+	basename = os.path.splitext(os.path.basename(wsi))[0]
+
+	scale = 20
+	reader = kr.reader()
+	kr.reader.ReadInfo(reader, wsi, scale, True)
+
+	for dic in js:
+		if dic['class'] == 'roi':
+			pass
+		img_name = '{}_{}_{}_{}_{}.jpg'.format(basename, dic['x'], dic['y'], dic['w'], dic['h'])
+		img_name = os.path.join(path, img_name)
+		img = reader.ReadRoi(dic['x'], dic['y'], dic['w'], dic['h'], scale)
+		cv2.imwrite(img_name, img)
+
+
+if __name__ == '__main__':
+	sample =  "T2019_34"
+	wsi =  "../data/test/" + sample + ".kfb"
+	label =  "../data/test/" + sample + ".json"
+	path = "../data/test/cells"
+	get_cells(wsi, label, path)
