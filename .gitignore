@@ -1,5 +1,10 @@
+*.jpg
 *.out
 *.kfb
+*.json
+*.xml
+*.csv
 *.sh
 *.zip
 /kfbreader
+/data
