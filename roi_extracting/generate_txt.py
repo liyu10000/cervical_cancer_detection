@@ -60,7 +60,7 @@ def gen_txt(path, dirs=("train", "test")):
         files = scan_files(os.path.join(path, d), postfix=".xml")
         print("# files:", len(files))
 
-        executor = ProcessPoolExecutor(max_workers=4)
+        executor = ProcessPoolExecutor(max_workers=cpu_count()//2)
         tasks = []
 
         batch_size = 5000
