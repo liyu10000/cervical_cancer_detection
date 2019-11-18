@@ -90,10 +90,14 @@ if __name__ == '__main__':
     sizes = worker_multip(data_path)
     print("# files", len(sizes))
 
-    # save file
+    # save pkl file
     pkl_file = "../data/postrain/sizes.pkl"
-    with open(, 'wb') as f:
+    with open(pkl_file, 'wb') as f:
         pickle.dump(sizes, f)
+
+    # # open pkl file
+    # with open(pkl_file, 'rb') as f:
+    #     sizes = pickle.load(f)
 
     # kmeans
     cluster_centers_ = kmeans_cluster(sizes, K=15, batch_size=128)
