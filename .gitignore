@@ -11,3 +11,5 @@
 __pycache__/
 /kfbreader
 /data
+*.cfg
+*.weights
